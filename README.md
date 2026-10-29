@@ -219,4 +219,4 @@ The API Docker image intentionally copies only `server`; it does not build or se
 
 After changing `VITE_API_URL`, trigger a new Vercel build because Vite embeds `VITE_*` variables into the generated client bundle.
 
-The repository must first be pushed to GitHub and the provider accounts must authorize access to it. This workspace has no configured Git remote or GitHub CLI credentials, so repository creation, pushing, and provider linking must be completed from authenticated GitHub/Koyeb/Vercel accounts.
+The GitHub repository is connected as the `origin` remote. Koyeb and Vercel still need to be authorized to access this repository from their respective dashboards.
