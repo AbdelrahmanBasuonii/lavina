@@ -41,6 +41,7 @@ export async function api(path, { method = 'GET', body, token } = {}) {
   }
 
   if (demoEligible && [404, 502, 503, 504].includes(res.status)) return demoResponse(path);
+  if (demoEligible && !res.headers.get('content-type')?.includes('application/json')) return demoResponse(path);
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'حدث خطأ، حاول مرة أخرى');
