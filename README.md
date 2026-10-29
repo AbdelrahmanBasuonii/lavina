@@ -103,6 +103,12 @@ npm run build
 
 The production client files are generated in `client/dist`. `npm run preview` can serve the build locally for a preview; it is not a production API server.
 
+### Frontend preview without the API
+
+The storefront includes a local preview catalog with products, categories, an empty reviews state, and a sample store card, using images from `client/public/images`. Public catalog requests automatically use this data if the API is unavailable or the deployment returns `404`, `502`, `503`, or `504`. A small notice identifies when the local preview is active. Browsing, product pages, and the cart can be demonstrated without a backend; sign-in, wishlists, order placement/history, submitting reviews, and admin changes still require a running API.
+
+Preview catalog content is illustrative. Store contact/location details are intentionally omitted, and the preview catalog does not represent live inventory or customer data.
+
 ## Admin access
 
 The admin account is created from `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `server/.env` when `npm run seed` is run. Sign in through the account page, then use **Admin** in the header or visit `/admin`.

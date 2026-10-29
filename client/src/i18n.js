@@ -70,6 +70,8 @@ const EN = {
   'متاجرنا': 'Our Stores',
   'لافينا - الفرع الرئيسي': 'Lavina - Main Branch',
   'العنوان هنا': 'Address coming soon',
+  'لافينا للمجوهرات': 'Lavina Jewelry',
+  'تفاصيل الفرع تُحدّث قريبًا': 'Branch details coming soon',
   'توصيل مجاني لجميع الطلبات': 'Free delivery on all orders',
   'ارجاع لمدة 30 يوم مجاني': 'Free 30-day returns',
   'التوصيل مجاني في اليوم التالي داخل القاهرة (*تطبق الشروط والأحكام)': 'Free next-day delivery in Cairo (terms and conditions apply)',
@@ -174,6 +176,7 @@ export const productName = (product, language) => language === 'en'
 
 export const productDescription = (product, language) => {
   if (language !== 'en') return product.description;
+  if (product.description_en) return product.description_en;
   return `Expertly crafted by Lavina Jewelry with a certificate of guarantee and an official invoice. Approximate weight: ${product.weight_g ?? '—'} g.`;
 };
 
