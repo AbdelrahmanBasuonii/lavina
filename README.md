@@ -182,39 +182,45 @@ Back up the database and `server/uploads` together using a consistent backup pro
 - Do not use `npm run seed` against a live database.
 - Replace sample/illustrative images with images that Lavina is authorized to publish.
 
-## Deploy the API to Render and the frontend to Vercel
+## Deploy the API to Railway and the frontend to Vercel
 
-The repository is a monorepo: deploy the **API only** to Render using the root `Dockerfile` and `render.yaml`, and deploy the **client only** to Vercel using `client` as its Root Directory. Both services can be connected to the same GitHub repository and deployed independently.
+The repository is a monorepo: deploy the **API only** to Railway using the root `Dockerfile`, and deploy the **client only** to Vercel using `client` as its Root Directory. Both services can be connected to the same GitHub repository and deployed independently.
 
 ### 1. Push the repository to GitHub
 
-Create a GitHub repository (private is recommended), then add it as the `origin` remote and push the project branch. Do not push `.env`, the SQLite database, database WAL files, or `server/uploads`; they are excluded by `.gitignore`. The admin login is not hard-coded: set it in Render as described below.
+Create a GitHub repository (private is recommended), then add it as the `origin` remote and push the project branch. Do not push `.env`, the SQLite database, database WAL files, or `server/uploads`; they are excluded by `.gitignore`. The admin login is not hard-coded: set it in Railway as described below.
 
-### 2. Deploy the API on Render
+### 2. Deploy the API on Railway
 
-1. In Render, create a **Blueprint** from the GitHub repository and select the repository branch to deploy. Render reads `render.yaml` at the repository root.
-2. Review the proposed resources before applying the Blueprint. It creates a Docker web service on the **Starter** compute plan and a **1 GB persistent disk** mounted at `/var/lib/lavina`; Render's free web services do not support persistent disks.
-3. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` when prompted. Use a unique password of at least 12 characters. The Blueprint generates `JWT_SECRET`.
-4. The Blueprint configures `CLIENT_ORIGIN` as `https://lavina-eight.vercel.app`, the database and upload paths, port `8000`, and `/health` as the health check. Render provides `RENDER_EXTERNAL_URL`, which the API uses to create absolute upload URLs.
-5. After the service is live and the persistent disk is mounted, initialize its empty database **once** from the Render Shell:
+1. Create a Railway project and deploy the public GitHub repository `AbdelrahmanBasuonii/lavina` from the `main` branch. Railway detects the root `Dockerfile`; keep the service root directory at the repository root.
+2. Add a volume to the API service and mount it at `/var/lib/lavina`. The SQLite database and uploaded images must be stored on this persistent volume to survive redeployments.
+3. Configure these service variables in Railway:
+   - `NODE_ENV=production`
+   - `PORT=8000`
+   - `JWT_SECRET`: a unique random secret of at least 32 characters
+   - `CLIENT_ORIGIN=https://lavina-eight.vercel.app`
+   - `DATABASE_PATH=/var/lib/lavina/lavina.db`
+   - `UPLOADS_DIR=/var/lib/lavina/uploads`
+   - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: set for initial admin creation; use a unique password of at least 12 characters
+4. Generate a Railway public domain for the API service and configure the public networking target port as `8000`. Railway exposes the domain as `RAILWAY_PUBLIC_DOMAIN`; the API uses it to create absolute URLs for uploaded images.
+5. Add `/health` as the deployment health check. The API returns `{ "status": "ok" }` when healthy.
+6. After the service is deployed and its volume is mounted, initialize the empty database **once** in the service shell:
 
    ```sh
-   cd /app && npm run seed
+   npm run seed
    ```
 
-   This creates a demo catalog and the admin account configured in Render. The command deletes existing users, products, reviews, stores, and orders, so never configure it as the service startup command or run it again against a database containing live data.
+   This creates a demo catalog and the admin account configured in Railway. The command deletes existing users, products, reviews, stores, and orders, so never configure it as the service startup command or run it again against a database containing live data. Keep the API to one replica when using SQLite on a mounted volume.
 
-6. Keep the service at one instance when using SQLite on a mounted disk. The API returns `{ "status": "ok" }` from `/health`.
-
-The API Docker image intentionally copies only `server`; it does not build or serve the React frontend. Product/category images from `client/public/images` are served by Vercel. Uploaded files are served by Render at `/uploads`.
+The API Docker image intentionally copies only `server`; it does not build or serve the React frontend. Product/category images from `client/public/images` are served by Vercel. Uploaded files are served by Railway at `/uploads`.
 
 ### 3. Deploy the frontend on Vercel
 
 1. Import the same GitHub repository into Vercel.
 2. Set **Root Directory** to `client`. Use the Vite defaults, or set Build Command to `npm run build` and Output Directory to `dist`.
-3. Add the environment variable `VITE_API_URL` with the public Render API origin, for example `https://lavina-api.onrender.com` (no trailing slash). Set it for the production environment and any preview environments you intend to use.
-4. Deploy the frontend and update Render's `CLIENT_ORIGIN` if the production origin differs from the configured value.
+3. Add the environment variable `VITE_API_URL` with the public Railway API origin (for example `https://lavina-api.up.railway.app`, without a trailing slash). Set it for the production environment and any preview environments you intend to use.
+4. Deploy the frontend and update Railway's `CLIENT_ORIGIN` if the production origin differs from the configured value.
 
 After changing `VITE_API_URL`, trigger a new Vercel build because Vite embeds `VITE_*` variables into the generated client bundle.
 
-The GitHub repository is connected as the `origin` remote. Render and Vercel still need to be authorized to access this repository from their respective dashboards.
+The GitHub repository is connected as the `origin` remote. Railway and Vercel still need to be authorized to access this repository from their respective dashboards. Railway pricing is usage-based; review the current plan and estimated charges before deploying.
