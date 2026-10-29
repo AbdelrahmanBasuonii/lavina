@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: lavina-api
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    disk:
+      name: lavina-data
+      mountPath: /var/lib/lavina
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8000"
+      - key: CLIENT_ORIGIN
+        value: https://lavina-eight.vercel.app
+      - key: DATABASE_PATH
+        value: /var/lib/lavina/lavina.db
+      - key: UPLOADS_DIR
+        value: /var/lib/lavina/uploads
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

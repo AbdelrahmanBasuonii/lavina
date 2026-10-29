@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
   const missingConfig = [];
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) missingConfig.push('JWT_SECRET (at least 32 characters)');
   if (!allowedOrigins.length) missingConfig.push('CLIENT_ORIGIN');
-  if (!process.env.API_PUBLIC_URL) missingConfig.push('API_PUBLIC_URL');
+  if (!process.env.API_PUBLIC_URL && !process.env.RENDER_EXTERNAL_URL) missingConfig.push('API_PUBLIC_URL');
   if (missingConfig.length) throw new Error(`Missing production configuration: ${missingConfig.join(', ')}`);
 }
 const SECRET = process.env.JWT_SECRET || 'dev-secret';
@@ -30,7 +30,7 @@ app.use(cors({
   },
 }));
 app.use(express.json({ limit: '8mb' }));
-const apiPublicUrl = (process.env.API_PUBLIC_URL || '').replace(/\/+$/, '');
+const apiPublicUrl = (process.env.API_PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || '').replace(/\/+$/, '');
 const uploadsDir = path.resolve(process.env.UPLOADS_DIR || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'uploads'));
 app.use('/uploads', express.static(uploadsDir));
 const publicAssetUrl = value => value?.startsWith('/uploads/') && apiPublicUrl
