@@ -1,0 +1,20 @@
+# Dependencies and build output
+node_modules/
+client/dist/
+
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+
+# Local database and generated uploads
+server/*.db
+server/*.db-shm
+server/*.db-wal
+server/uploads/
+
+# Logs and editor/OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/

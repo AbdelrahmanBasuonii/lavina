@@ -1,0 +1,12 @@
+const P = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' };
+export const Bag = () => <svg {...P}><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>;
+export const Heart = ({ fill }) => <svg {...P} fill={fill ? 'currentColor' : 'none'}><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.600-7 10-7 10z"/></svg>;
+export const User = () => <svg {...P}><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>;
+export const Pin = () => <svg {...P}><path d="M12 21s-6-5.500-6-11a6 6 0 0112 0c0 5.500-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>;
+export const Globe = () => <svg {...P}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>;
+export const Search = () => <svg {...P} width="18" height="18"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>;
+export const Menu = () => <svg {...P}><path d="M4 7h16M4 12h16M4 17h16"/></svg>;
+export const Close = () => <svg {...P}><path d="M6 6l12 12M18 6L6 18"/></svg>;
+export const Chevron = ({ dir = 'left' }) => <svg {...P} width="18" height="18" style={{ transform: dir === 'right' ? 'scaleX(-1)' : 'none' }}><path d="M15 5l-7 7 7 7"/></svg>;
+export const Headset = () => <svg {...P}><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.500"/><rect x="17" y="14" width="4" height="6" rx="1.500"/></svg>;
+export const Chat = () => <svg {...P}><path d="M20 11.5a7.5 7.5 0 01-8 7.5 8.8 8.8 0 01-4-.9L4 20l1.2-3.4A7.2 7.2 0 014 11.5 7.5 7.5 0 0112 4a7.5 7.5 0 018 7.5z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>;
