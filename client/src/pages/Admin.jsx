@@ -44,8 +44,10 @@ export default function Admin() {
   const [busy, setBusy] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState(null);
   const [visibleCounts, setVisibleCounts] = useState({
-    orders: 10, products: 10, reviews: 10, stores: 10,
+    orders: 10, products: 10, hiddenProducts: 10, reviews: 10, stores: 10,
   });
+  const activeProducts = products.filter(item => item.is_active);
+  const hiddenProducts = products.filter(item => !item.is_active);
   const visibleItems = (items, key) => items.slice(0, visibleCounts[key]);
   const moreItems = (items, key) => (
     <div className="admin-more">
@@ -177,21 +179,17 @@ export default function Admin() {
   const deleteProduct = async item => {
     if (!window.confirm(L('إخفاء هذا المنتج من المتجر؟', 'Hide this product from the store?'))) return;
     try {
-      const body = {
-        sku: item.sku, name: item.name, name_en: item.name_en || '', description: item.description,
-        category_id: item.category_id, item_type: item.item_type, karat: item.karat,
-        weight_g: item.weight_g, price: item.price, discount_percent: item.discount_percent,
-        stock: item.stock, images: item.images, is_best_seller: !!item.is_best_seller,
-        is_new: !!item.is_new, is_active: false,
-      };
-      await api(`/admin/products/${item.id}`, { method: 'PUT', token, body });
+      await api(`/admin/products/${item.id}`, { method: 'DELETE', token });
+      setProducts(current => current.map(product => (
+        product.id === item.id ? { ...product, is_active: 0 } : product
+      )));
       await loadData();
     } catch (ex) { notifyError(ex); }
   };
 
   const tabs = [
     ['orders', L('الطلبات', 'Orders'), orders.length],
-    ['products', L('المنتجات', 'Products'), products.length],
+    ['products', L('المنتجات', 'Products'), activeProducts.length],
     ['reviews', L('التقييمات', 'Reviews'), reviews.length],
     ['stores', L('الفروع ومواعيد العمل', 'Stores & hours'), stores.length],
   ];
@@ -296,8 +294,13 @@ export default function Admin() {
           </div>
         </form>
         <h2 className="admin-subhead">{L('المنتجات الحالية', 'Current products')}</h2>
-        <div className="admin-list">{visibleItems(products, 'products').map(item => <article key={item.id}><img src={item.images[0]} alt="" /><div><b>{item.name}</b><small>{item.sku} · {Number(item.price).toLocaleString()} EGP · {item.stock} {L('متاح', 'in stock')}</small>{!item.is_active && <em>{L('مخفي', 'Hidden')}</em>}</div><button className="btn line" onClick={() => editProduct(item)}>{L('تعديل', 'Edit')}</button><button className="admin-danger" onClick={() => deleteProduct(item)}>{L('إخفاء', 'Hide')}</button></article>)}</div>
-        {moreItems(products, 'products')}
+        <div className="admin-list">{visibleItems(activeProducts, 'products').map(item => <article key={item.id}><img src={item.images[0]} alt="" /><div><b>{item.name}</b><small>{item.sku} · {Number(item.price).toLocaleString()} EGP · {item.stock} {L('متاح', 'in stock')}</small></div><button className="btn line" onClick={() => editProduct(item)}>{L('تعديل', 'Edit')}</button><button className="admin-danger" onClick={() => deleteProduct(item)}>{L('إخفاء', 'Hide')}</button></article>)}</div>
+        {moreItems(activeProducts, 'products')}
+        {!!hiddenProducts.length && <details className="admin-hidden-products">
+          <summary>{L(`المنتجات المخفية (${hiddenProducts.length})`, `Hidden products (${hiddenProducts.length})`)}</summary>
+          <div className="admin-list">{visibleItems(hiddenProducts, 'hiddenProducts').map(item => <article key={item.id}><img src={item.images[0]} alt="" /><div><b>{item.name}</b><small>{item.sku} · {Number(item.price).toLocaleString()} EGP · {item.stock} {L('متاح', 'in stock')}</small><em>{L('مخفي', 'Hidden')}</em></div><button className="btn line" onClick={() => editProduct(item)}>{L('تعديل', 'Edit')}</button></article>)}</div>
+          {moreItems(hiddenProducts, 'hiddenProducts')}
+        </details>}
       </section>}
 
       {section === 'reviews' && <section className="admin-content">

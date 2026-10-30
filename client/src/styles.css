@@ -284,6 +284,8 @@ h2 { font-size: clamp(22px, 2.4vw, 32px); }
 .admin-image-list img, .admin-list > img { width: 104px; height: 88px; object-fit: cover; border-radius: 8px; background: var(--cream); }
 .admin-image-list button { width: 100%; color: #8a4334; font-size: 12px; padding: 4px; }
 .admin-subhead { margin-top: 36px; }
+.admin-hidden-products { margin-top: 24px; }
+.admin-hidden-products > summary { cursor: pointer; color: var(--muted); }
 .admin-list { display: grid; gap: 8px; margin-top: 14px; }
 .admin-list article { display: flex; align-items: center; gap: 14px; padding: 10px; border-bottom: 1px solid var(--line); }
 .admin-list article > img { flex: 0 0 72px; width: 72px; height: 64px; object-fit: cover; border-radius: 8px; }
