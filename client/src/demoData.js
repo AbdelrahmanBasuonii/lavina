@@ -19,7 +19,6 @@ const productRows = [
   ['LV-S-0002', 'خاتم فضة 925 مرصع بزركون', '925 Silver Ring with Zircon', 'ring', 4, null, 3.5, 980, 0, 40, 0, 0, 'diamond-ring.jpg'],
   ['LV-W-0001', 'دبلة زفاف ذهب عيار 18 قيراط', '18K Gold Wedding Band', 'ring', 5, 18, 4, 17800, 0, 20, 0, 0, 'diamond-ring.jpg'],
   ['LV-C-0001', 'إسورة عصرية بحجر ملون ذهب عيار 18 قيراط', 'Modern 18K Gold Bracelet with a Colorful Stone', 'bracelet', 3, 18, 3.3, 12400, 0, 11, 0, 1, 'chain-bracelet.jpg'],
-  ['LV-GF-0001', 'قلادة لؤلؤية أنيقة لهدايا المناسبات', 'Elegant Pearl Pendant Necklace for Special Occasions', 'necklace', 6, null, 2.8, 12900, 0, 8, 0, 1, 'pearl-pendant-necklace.jpg'],
 ];
 
 const products = productRows.map(([
